@@ -32,8 +32,43 @@ def vis_point_cloud(data, colors=None):
         if not vis.poll_events():
             break
         vis.update_renderer()
+    vis.destroy_window()
+
+def vis_point_cloud_side_by_side(data1, data2, colors1=None, colors2=None):
+    vis = o3d.visualization.VisualizerWithEditing()
+    vis.create_window(window_name='TopLeft', width=960, height=540, left=0, top=0)
+
+    pcd1 = o3d.geometry.PointCloud()
+    pcd1.points = o3d.utility.Vector3dVector(data1)
+    if colors1 is not None:
+        pcd1.colors = o3d.utility.Vector3dVector(colors1)
+
+    vis.add_geometry(pcd1)
+
+    vis2 = o3d.visualization.VisualizerWithEditing()
+    vis2.create_window(window_name='TopRight', width=960, height=540, left=960, top=0)
+
+    pcd2 = o3d.geometry.PointCloud()
+    pcd2.points = o3d.utility.Vector3dVector(data2)
+
+    if colors2 is not None:
+        pcd2.colors = o3d.utility.Vector3dVector(colors2)
+
+    vis2.add_geometry(pcd2)
+
+    while True:
+        vis.update_geometry(pcd1)
+        if not vis.poll_events():
+            break
+        vis.update_renderer()
+
+        vis2.update_geometry(pcd2)
+        if not vis2.poll_events():
+            break
+        vis2.update_renderer()
 
     vis.destroy_window()
+    vis2.destroy_window()
 
 
 class AverageMeter(object):

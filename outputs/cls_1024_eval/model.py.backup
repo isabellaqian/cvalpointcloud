@@ -42,9 +42,8 @@ def get_graph_feature(x, k=20, idx=None, dim9=False):
             idx = knn(x, k=k)  # (batch_size, num_points, k)
         else:
             idx = knn(x[:, 6:], k=k)
-    device = torch.device("cpu")
-
-    idx_base = torch.arange(0, batch_size, device=device).view(-1, 1, 1) * num_points
+    # device = torch.device("cpu")
+    idx_base = torch.arange(0, batch_size, device=x.device).view(-1, 1, 1) * num_points
 
     idx = idx + idx_base
 
