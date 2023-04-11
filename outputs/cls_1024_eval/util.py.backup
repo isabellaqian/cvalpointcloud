@@ -6,12 +6,34 @@ import pickle
 import numpy as np
 from plyfile import PlyData
 
+import open3d as o3d
+
 import torch
 from torch import nn
 from torch.nn.modules.conv import _ConvNd
 from torch.nn.modules.batchnorm import _BatchNorm
 import torch.nn.init as initer
 import torch.nn.functional as F
+
+
+def vis_point_cloud(data, colors=None):
+    vis = o3d.visualization.VisualizerWithEditing()
+    vis.create_window(window_name='TopLeft', width=960, height=540, left=0, top=0)
+
+    pcd1 = o3d.geometry.PointCloud()
+    pcd1.points = o3d.utility.Vector3dVector(data)
+    if colors is not None:
+        pcd1.colors = o3d.utility.Vector3dVector(colors)
+
+    vis.add_geometry(pcd1)
+
+    while True:
+        vis.update_geometry(pcd1)
+        if not vis.poll_events():
+            break
+        vis.update_renderer()
+
+    vis.destroy_window()
 
 
 class AverageMeter(object):
